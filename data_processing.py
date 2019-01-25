@@ -12,5 +12,22 @@ class DataProcessor():
         self.wind_stdev = stdev(tmp)
 
     def find_location_candidates(self, nominal_speed):
-        for a in self.df_wind_data.itertuples():
-            print(a)
+        to_return = []
+        for index, val in self.df_wind_data.values:
+            if nominal_speed - self.wind_stdev < val < nominal_speed + self.wind_stdev:
+                to_return.append(index)
+
+        return to_return
+
+
+    def find_depth_candidates(self, location_candidates):
+        depth = self.df_depth_data.values
+        depth_dict = {}
+        for i, j in location_candidates:
+            depth_dict[(i,j)] = depth[i,j]
+        return sorted(depth_dict.items(), key=lambda kv: kv[1])
+
+
+
+
+
