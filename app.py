@@ -26,6 +26,14 @@ def getEvents():
     result = db.all()
     return jsonify(result)
 
+@app.route('/app/submit')
+def submit():
+    requestType = request.args['type']
+    if requestType == 'Calculate':
+        return "Perform a calculation!"
+    elif requestType == 'Export':
+        return "Perform an export!"
+
 
 if __name__ == '__main__':
     app.run()
