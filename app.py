@@ -72,7 +72,6 @@ def get_result():
     # Some of these are Numpy types which need unpacking with the item() function
 
     returnList = []
-    l = dataProcessor.resultList
     for result in dataProcessor.resultList:
         if result[0]:
             calculation_result = {}
