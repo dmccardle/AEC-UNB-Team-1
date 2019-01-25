@@ -85,4 +85,4 @@ class DataProcessor():
                 total_power += nominal_power
                 total_time += time_to_construct
             else:
-                return total_cost, len(locations), locations, total_power, total_time, type
+                return total_cost, len(locations), locations, total_power, total_time, type, budget

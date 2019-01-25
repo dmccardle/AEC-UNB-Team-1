@@ -80,6 +80,7 @@ def get_result():
             calculation_result['totalPower'] = result[3]
             calculation_result['totalTime'] = result[4]
             calculation_result['type'] = result[5]
+            calculation_result['budgetval'] = result[6]
             returnList.append(calculation_result)
 
     return json.dumps(returnList)
