@@ -7,7 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="{{ url_for('static', filename='materialize.min.js') }}"></script>
     <script src="{{ url_for('static', filename='jquery.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='moment.min.js') }}"></script>
     <script src="{{ url_for('static', filename='http.js') }}"></script>
     <link rel= "stylesheet" type= "text/css" href= "/static/app.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
@@ -88,11 +87,9 @@
                // Should only be one left after filtering.
                data = data[0];
 
-               console.log(data);
                Object.keys(data).forEach(function(key,index) {
                 // key: the name of the object key
                 // index: the ordinal position of the key within the object
-                   console.log(key, data[key]);
                     if(Array.isArray(data[key])) {
                         $("#" + key).empty();
                         data[key].forEach(function(listItem, index) {
