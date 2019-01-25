@@ -7,7 +7,6 @@ import json
 app = Flask(__name__)
 # Setup data processor for performing data manipulations
 dataProcessor = DataProcessor()
-result = dataProcessor.calculate_cost(100000000, 'Type 1')
 
 # App home screen
 @app.route('/app')
@@ -66,15 +65,27 @@ def optional_cost_data():
 
 @app.route('/app/getresult')
 def get_result():
-    calculation_result = {}
+    result1 = dataProcessor.calculate_cost(100000000, 'Type 1')
+    result2 = dataProcessor.calculate_cost(100000000, 'Type 2')
+    result3 = dataProcessor.calculate_cost(100000000, 'Type 3')
+    result4 = dataProcessor.calculate_cost(100000000, 'Type 4')
+    resultList = [result1, result2, result3, result4]
     # Some of these are Numpy types which need unpacking with the item() function
-    calculation_result['totalCost'] = result[0].item()
-    calculation_result['numTurbines'] = result[1]
-    calculation_result['locations'] = result[2]
-    calculation_result['totalPower'] = result[3].item()
-    calculation_result['totalTime'] = result[4].item()
 
-    return json.dumps(calculation_result)
+    returnList = []
+
+    for result in resultList:
+        if result[0]:
+            calculation_result = {}
+            calculation_result['totalCost'] = result[0].item()
+            calculation_result['numTurbines'] = result[1]
+            calculation_result['locations'] = result[2]
+            calculation_result['totalPower'] = result[3].item()
+            calculation_result['totalTime'] = result[4].item()
+            calculation_result['type'] = result[5]
+            returnList.append(calculation_result)
+
+    return json.dumps(returnList)
 
 if __name__ == '__main__':
     app.run()
