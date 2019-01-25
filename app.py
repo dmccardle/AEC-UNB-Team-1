@@ -28,16 +28,27 @@ def getEvents():
 def submit():
     requestType = request.form['type']
     if requestType == 'Calculate':
-        print(request.form)
-        json_representation = {}
+        json_turbine = {}
+        json_optional = {}
         for value_in in request.form:
             split = value_in.split('_')
-            for i, token in enumerate(reversed(split)):
+            print(split[0])
+            if len(split) < 3: # represent budget or type 
+                if split[0] == 'budget':
+                    budget = request.form[split[0]]
+            elif split[1] == 'turbine': # represents data for the turbines
+                if split[2] not in json_turbine:
+                    json_turbine[split[2]] = {}
+                else:
+                    json_turbine[split[2]][split[0]] = request.form[split[0]]
+            else: # represents data for the optional costs
+                if split[2] not in json_optional and split[2].isdigit():
+                    json_optional[split[2]] = {}
+                else:
+                    json_optional[split[2]][split[0]] = request.form[split[0]]
 
-                if token not in json_representation and i == 0:
-                    json_representation[token] = {}
-        
-        print(json_representation)
+        print(json_turbine)
+        print(json_optional)
         return "Perform a calculation!"
     elif requestType == 'Export':
         return "Perform an export!"

@@ -79,7 +79,7 @@
                     $("#turbine_input").append('<div class="row" id="' + formatted_attribute + '"></div>');
                     $("#" + formatted_attribute ).append('<div class="col-5">' + attribute + '</div>')
                     for( var element in data[attribute]) {
-                        $("#" + formatted_attribute).append('<input class="col" type="text" name="' + attribute + '_turbine_' + element + '" value="' + data[attribute][element] + '">')
+                        $("#" + formatted_attribute).append('<input class="col" type="text" name="' + attribute + '_turbine_' + data["Turbine Type"][element] + '" value="' + data[attribute][element] + '">')
                     }
                 }
             }, get_default_error_handler );
