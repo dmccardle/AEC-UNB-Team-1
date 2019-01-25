@@ -7,9 +7,16 @@ class DataProcessor():
         self.df_optional_costs = pd.read_excel('aec.xlsx', skiprows=11).dropna(axis=1)
         self.df_wind_data = pd.read_excel('aec.xlsx', sheet_name='wind-data', index_col=0)
         self.df_depth_data = pd.read_excel('aec.xlsx', sheet_name='depth-data', index_col=0)
+
         tmp = self.df_wind_data.values.reshape(1, -1)[0]  # flatten data points
         tmp = [x for x in tmp if isinstance(x, (int, float))]  # remove non-numbers
         self.wind_stdev = stdev(tmp)
+
+        self.result1 = self.calculate_cost(100000000, 'Type 1')
+        self.result2 = self.calculate_cost(100000000, 'Type 2')
+        self.result3 = self.calculate_cost(100000000, 'Type 3')
+        self.result4 = self.calculate_cost(100000000, 'Type 4')
+        self.resultList = [self.result1, self.result2, self.result3, self.result4]
 
 
     # Returns: all locations that have wind speed within one standard deviation of nominal_speed
@@ -31,6 +38,12 @@ class DataProcessor():
             depth_dict[(i,j)] = depth[i,j]
         return sorted(depth_dict.items(), key=lambda kv: kv[1])
 
+    def calculate_all(self, budget):
+        self.result1 = self.calculate_cost(budget, 'Type 1')
+        self.result2 = self.calculate_cost(budget, 'Type 2')
+        self.result3 = self.calculate_cost(budget, 'Type 3')
+        self.result4 = self.calculate_cost(budget, 'Type 4')
+        self.resultList = [self.result1, self.result2, self.result3, self.result4]
 
     # Returns: List of turbines that can be bought under the budget
     def calculate_cost(self, budget, turbine_type):

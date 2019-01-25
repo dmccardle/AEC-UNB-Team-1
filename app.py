@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, send_from_directory, jsonify
+from flask import Flask, render_template, request, send_from_directory
 from data_processing import *
 import os
 import json
@@ -24,6 +24,7 @@ def submit():
         json_turbine = {}
         # stores json data about each optional data type from the excel document
         json_optional = {}
+        budget = 0
 
         # process which form data is for the turbine, and which is for the optional data
         json_turbine, json_optional = process_form_data()
@@ -45,8 +46,10 @@ def submit():
                 row[attribute].iloc[0] = json_optional[option][attribute]
 
             dataProcessor.df_optional_costs.loc[dataProcessor.df_optional_costs['Type'] == option] = row
-            
-        return "Perform a calculation!"
+
+        dataProcessor.calculate_all(budget)
+
+        return render_template('app.html')
     elif requestType == 'Export':
         return "Perform an export!"
 
@@ -65,16 +68,12 @@ def optional_cost_data():
 
 @app.route('/app/getresult')
 def get_result():
-    result1 = dataProcessor.calculate_cost(100000000, 'Type 1')
-    result2 = dataProcessor.calculate_cost(100000000, 'Type 2')
-    result3 = dataProcessor.calculate_cost(100000000, 'Type 3')
-    result4 = dataProcessor.calculate_cost(100000000, 'Type 4')
-    resultList = [result1, result2, result3, result4]
+
     # Some of these are Numpy types which need unpacking with the item() function
 
     returnList = []
 
-    for result in resultList:
+    for result in dataProcessor.resultList:
         if result[0]:
             calculation_result = {}
             calculation_result['totalCost'] = result[0].item()
