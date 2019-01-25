@@ -47,7 +47,7 @@ def submit():
 
             dataProcessor.df_optional_costs.loc[dataProcessor.df_optional_costs['Type'] == option] = row
 
-        dataProcessor.calculate_all(budget)
+        dataProcessor.calculate_all(float(budget))
 
         return render_template('app.html')
     elif requestType == 'Export':
@@ -72,15 +72,15 @@ def get_result():
     # Some of these are Numpy types which need unpacking with the item() function
 
     returnList = []
-
+    l = dataProcessor.resultList
     for result in dataProcessor.resultList:
         if result[0]:
             calculation_result = {}
-            calculation_result['totalCost'] = result[0].item()
+            calculation_result['totalCost'] = result[0]
             calculation_result['numTurbines'] = result[1]
             calculation_result['locations'] = result[2]
-            calculation_result['totalPower'] = result[3].item()
-            calculation_result['totalTime'] = result[4].item()
+            calculation_result['totalPower'] = result[3]
+            calculation_result['totalTime'] = result[4]
             calculation_result['type'] = result[5]
             returnList.append(calculation_result)
 
