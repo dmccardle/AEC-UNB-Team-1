@@ -1,10 +1,12 @@
 from flask import Flask, render_template, request, send_from_directory, jsonify
 from data_processing import *
 import os
+import json
 
 app = Flask(__name__)
 dataProcessor = DataProcessor()
-dataProcessor.calculate_cost(100000000, 'Type 1')
+result = dataProcessor.calculate_cost(100000000, 'Type 1')
+
 
 @app.route('/app')
 def hello_world():
@@ -23,7 +25,7 @@ def submit():
         
         for value_in in request.form:
             split = value_in.split('_')
-            
+
             if len(split) < 3: # represent budget or type 
                 if split[COLUMN_INDEX] == 'budget':
                     budget = request.form[split[COLUMN_INDEX]]
@@ -45,7 +47,7 @@ def submit():
         # Modify Turbine information tables
         for turbine in json_turbine:
             row = dataProcessor.df_turbines.loc[dataProcessor.df_turbines['Turbine Type'] == turbine]
-            
+
             for attribute in json_turbine[turbine]:
                 row[attribute].iloc[0] = json_turbine[turbine][attribute]
 
@@ -54,7 +56,7 @@ def submit():
         # Modify Optional Cost information tables
         for option in json_optional:
             row = dataProcessor.df_optional_costs.loc[dataProcessor.df_optional_costs['Type'] == option]
-            
+
             for attribute in json_optional[option]:
                 row[attribute].iloc[0] = json_optional[option][attribute]
 
@@ -76,6 +78,18 @@ def turbine_data():
 @app.route('/app/get_optional_cost_data')
 def optional_cost_data():
     return dataProcessor.df_optional_costs.to_json()
+
+@app.route('/app/getresult')
+def get_result():
+    calculation_result = {}
+    # Some of these are Numpy types which need unpacking with the item() function
+    calculation_result['totalCost'] = result[0].item()
+    calculation_result['numTurbines'] = result[1]
+    calculation_result['locations'] = result[2]
+    calculation_result['totalPower'] = result[3].item()
+    calculation_result['totalTime'] = result[4].item()
+
+    return json.dumps(calculation_result)
 
 if __name__ == '__main__':
     app.run()
