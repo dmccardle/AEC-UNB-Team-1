@@ -30,11 +30,18 @@ def getEvents():
     result = db.all()
     return jsonify(result)
 
+@app.route('/app/submit')
+def submit():
+    requestType = request.args['type']
+    if requestType == 'Calculate':
+        return "Perform a calculation!"
+    elif requestType == 'Export':
+        return "Perform an export!"
+
 @app.route('/favicon.ico')
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'),
                                'favicon.ico', mimetype='image/vnd.microsoft.icon')
-
 
 if __name__ == '__main__':
     app.run()

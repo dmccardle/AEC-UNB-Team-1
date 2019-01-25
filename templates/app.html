@@ -1,81 +1,87 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='materialize.min.css') }}">
-    <link rel='stylesheet' type="text/css" href="{{ url_for('static', filename='fullcalendar.min.css') }}">
-
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>AEC Halifax</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="{{ url_for('static', filename='materialize.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='moment.min.js') }}"></script>
+    <link rel= "stylesheet" type= "text/css" href= "/static/app.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 </head>
-
-
-
 <body>
-<div id="calendar" style="width: 65%; margin:auto"></div>
-<script src="{{ url_for('static', filename='materialize.min.js') }}"></script>
-<script src="{{ url_for('static', filename='jquery.min.js') }}"></script>
-<script src="{{ url_for('static', filename='moment.min.js') }}"></script>
-<script src="{{ url_for('static', filename='fullcalendar.min.js') }}"></script>
-
-<script type="text/javascript">
-    $(document).ready(function() {
-        $('#calendar').fullCalendar({
-            header: {
-                left: 'month,agendaWeek,agendaDay,list',
-                center: 'addEventButton',
-                right: 'prev,next',
-            },
-            footer: {
-                left: '',
-                center: '',
-                right: ''
-            },
-            customButtons: {
-                addEventButton: {
-                    text: 'add event...',
-                    click: function() {
-                        var dateStr = prompt('Enter a date in YYYY-MM-DD format');
-                        var date = moment(dateStr);
-
-                        if (date.isValid()) {
-                            var event = {
-                                        title: 'dynamic event',
-                                        start: date,
-                                        allDay: true
-                                        }
-                                        
-                            $('#calendar').fullCalendar('renderEvent', event );
-                            
-                            event.start = event.start.format('YYYY-MM-DD');
-                            fetch( "/app/addEvent", { body: JSON.stringify( event ), method: "POST", headers: { "Content-Type": "application/json"}});
-                        } else {
-                            alert('Invalid date.');
-                        }
-                    }
-                }
-            }
-        });
-
-        const fetchUrl = "http://localhost:5000/app/fetch";
-        fetch(fetchUrl)
-            .then((resp) => resp.json())
-            .then(function(data) {
-                data.forEach(element => {
-                    if (element.date) {
-                        let date = moment(element.date);
-                        if (date.isValid()) {
-                            $('#calendar').fullCalendar('renderEvent', {
-                                title: element.name,
-                                start: date,
-                                allDay: element.allDay
-                            });
-                        } else {
-                            alert('Invalid date.');
-                        }
-                    }
-                });
-            });
-    });
-</script>
+    <div class="container">
+        <form> 
+            <div class="row">
+                <div class="col-9" id="input" style="border-style: solid;"><h1 class="text-center">Input</h1>
+                    <div id="budget">
+                        <h2>Budget</h2>
+                        <div class="row">
+                            <div class="col">
+                                ($): <input type="number" name="budget">
+                            </div>
+                        </div>
+                    </div>
+                    <div id="turbines">
+                        <h2>Turbines</h2>
+                        <div class="col">
+                            <div class="row">Turbine Name</div>
+                            <div class="row">IEC class</div>
+                            <div class="row">Rotor diameter(m)</div>
+                            <div class="row">Blade length(m)</div>
+                            <div class="row">Swept Area(m^2)</div>
+                            <div class="row">Cut-in speed(m/s)</div>
+                            <div class="row">Nominal power at</div>
+                            <div class="row">Cut-out speed(m/s)</div>
+                            <div class="row">Nominal Power(kW)</div>
+                            <div class="row">$/meter depth</div>
+                            <div class="row">Unit cost($M)</div>
+                            <div class="row">Maintenance Cost($M/yr)</div>
+                            <div class="row">Construct time(yr)</div>
+                        </div>
+                        <div id="optional_costs">
+                            <h2>Optional Costs</h2>
+                            <div class="row">
+                                <div class="col">Type</div>
+                                <div class="col">Cost</div>
+                                <div class="col">Time Step</div>
+                                <div class="col">Maximum</div>
+                                <div class="col">Benefit</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3" id="output" style="border-style: solid;"><h1 class="text-center">Output</h1>
+                    <div id="turbine_output">
+                        <div class="row">
+                            <p>Placement: </p>
+                        </div>
+                        <div class="row">
+                            <p>Number: </p>
+                        </div>
+                        <div class="row">
+                            <p>Type: </p>
+                        </div>
+                        <div class="row">
+                            <p>Time: </p>
+                        </div>
+                        <div class="row">
+                            <p>Cost: </p>
+                        </div>
+                        <div class="row">
+                            <p>Power produced: </p>
+                        </div>
+                    </div>
+                </div>
+            </div>     
+            <div class="row">
+                <input type="submit" name="type" value="Calculate" class="btn btn-info btn-lg col">
+                <input type="submit" name="type" value="Export" class="btn btn-success btn-lg col">
+            </div>       
+        </form>
+    </div>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
 </body>
 </html>
