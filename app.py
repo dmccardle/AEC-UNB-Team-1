@@ -19,25 +19,35 @@ def submit():
         json_turbine = {}
         json_optional = {}
 
+        COLUMN_INDEX = 0 # Represents the index for accessing a column ex. Cut-in wind speed
+        TYPE_INDEX = 1 # Represents the type the data represents (turbine or optional costs)
+        ROW_INDEX = 2 # Represents which turbine or optional cost this data is referencing
+        
         for value_in in request.form:
             split = value_in.split('_')
+
             if len(split) < 3: # represent budget or type 
-                if split[0] == 'budget':
-                    budget = request.form[split[0]]
-            elif split[1] == 'turbine': # represents data for the turbines
-                if split[2] not in json_turbine:
-                    json_turbine[split[2]] = {}
+                if split[COLUMN_INDEX] == 'budget':
+                    budget = request.form[split[COLUMN_INDEX]]
+                elif split[COLUMN_INDEX] == 'profit':
+                    price_per_kwh = request.form[split[COLUMN_INDEX]]
+
+            elif split[TYPE_INDEX] == 'turbine': # represents data for the turbines
+                if split[ROW_INDEX] not in json_turbine:
+                    json_turbine[split[ROW_INDEX]] = {}
                 else:
-                    json_turbine[split[2]][split[0]] = request.form[value_in]
+                    json_turbine[split[ROW_INDEX]][split[COLUMN_INDEX]] = request.form[value_in]
+
             else: # represents data for the optional costs
-                if split[2] not in json_optional:
-                    json_optional[split[2]] = {}
+                if split[ROW_INDEX] not in json_optional:
+                    json_optional[split[ROW_INDEX]] = {}
                 else:
-                    json_optional[split[2]][split[0]] = request.form[value_in]
+                    json_optional[split[ROW_INDEX]][split[COLUMN_INDEX]] = request.form[value_in]
 
         # Modify Turbine information tables
         for turbine in json_turbine:
             row = dataProcessor.df_turbines.loc[dataProcessor.df_turbines['Turbine Type'] == turbine]
+
             for attribute in json_turbine[turbine]:
                 row[attribute].iloc[0] = json_turbine[turbine][attribute]
 
@@ -46,6 +56,7 @@ def submit():
         # Modify Optional Cost information tables
         for option in json_optional:
             row = dataProcessor.df_optional_costs.loc[dataProcessor.df_optional_costs['Type'] == option]
+
             for attribute in json_optional[option]:
                 row[attribute].iloc[0] = json_optional[option][attribute]
 
