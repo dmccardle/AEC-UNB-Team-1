@@ -1,21 +1,15 @@
 from flask import Flask, render_template, request, send_from_directory, jsonify
 from tinydb import TinyDB, Query
-import pandas as pd
+from data_processing import *
 import os
 
 app = Flask(__name__)
 db = TinyDB('data.json')
-df_turbines = pd.read_excel('aec.xlsx', nrows=4)
-df_optional_costs = pd.read_excel('aec.xlsx', skiprows=11).dropna(axis=1)
-df_wind_data = pd.read_excel('aec.xlsx', sheet_name='wind-data', index_col=0)
-df_depth_data = pd.read_excel('aec.xlsx', sheet_name='depth-data', index_col=0)
+dataProcessor = DataProcessor()
+dataProcessor.calculate_cost(100000000, 'Type 1')
 
 @app.route('/app')
 def hello_world():
-    q = Query()
-    print(df_turbines)
-    print(df_optional_costs)
-    print(df_wind_data.iloc[1])
     return render_template('app.html')
 
 @app.route( '/app/addEvent', methods=['POST'] )
@@ -55,11 +49,11 @@ def favicon():
 
 @app.route('/app/get_turbine_data')
 def turbine_data():
-    return df_turbines.to_json()
+    return dataProcessor.df_turbines.to_json()
 
 @app.route('/app/get_optional_cost_data')
 def optional_cost_data():
-    return df_optional_costs.to_json()
+    return dataProcessor.df_optional_costs.to_json()
 
 if __name__ == '__main__':
     app.run()
