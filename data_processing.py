@@ -40,7 +40,7 @@ class DataProcessor():
         nominal_speed = turbine['Nominal power at (m/s)'].iloc[0]
         nominal_power = turbine['Nominal Power (kW)'].iloc[0]
         time_to_construct = turbine['Time to construct (years)'].iloc[0]
-
+        type = turbine['Turbine Type'].iloc[0]
 
 
         if not isinstance(nominal_speed, (int, float)):
@@ -71,4 +71,4 @@ class DataProcessor():
                 total_power += nominal_power
                 total_time += time_to_construct
             else:
-                return total_cost, len(locations), locations, total_power, total_time
+                return total_cost, len(locations), locations, total_power, total_time, type

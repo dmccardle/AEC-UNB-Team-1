@@ -37,12 +37,14 @@
                     </div>
                 </div>
                 <div class="col-3" id="output" style="border-style: solid;"><h1 class="text-center">Output</h1>
+                    <select id="dropDown"></select>
+
                     <div id="turbine_output">
                         <div class="row" id="locations">
                             <p>Placement(s): </p>
                         </div>
                         <div class="row" id="numTurbines">
-                            <p># Turbines: </p>
+                            <p># of Turbines: </p>
                         </div>
                         <div class="row" id="type">
                             <p>Type: </p>
@@ -107,21 +109,21 @@
 
 
             get_request( "/app/getresult", function(data) {
-                Object.keys(data).forEach(function(key,index) {
-                // key: the name of the object key
-                // index: the ordinal position of the key within the object
-                    if(Array.isArray(data[key])) {
-                        data[key].forEach(function(listItem,index) {
-                            $("#" + key).append('<p>' + 'Longitude, Latitude: '+ listItem + '</p>')
-                        });
+                if(data) {
+                    data.forEach(function(listItem, index) {
+                        $('#dropDown').append(new Option(data[listItem], data[listItem]));
+                    });
 
-                    } else {
-                        $("#" + key).append('<span> &nbsp' + data[key] + '</span>')
-                    }
-                 });
 
+                }
             }, get_default_error_handler );
         });
+
+
+         $("#dropDown").change(function () {
+            var end = this.value;
+
+         });
     </script>
 </body>
 </html>
