@@ -33,3 +33,9 @@ the new file.
 - Web Application: Python, Flask Framework (http://flask.pocoo.org/), Bootstrap Framework (https://getbootstrap.com/)
 - Data Manipulation and Analysis: Pandas Library (https://pandas.pydata.org/)
 - Persistent Data Storage: Excel
+
+### To Run
+- requires python3 and pip3
+- install requirements ```pip3 install -r requirements.txt```
+- run the app! ```python3 -m flask run```
+- in your browser go to ```localhost:5000/app```
