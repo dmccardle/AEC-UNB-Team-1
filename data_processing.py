@@ -36,16 +36,11 @@ class DataProcessor():
         return sorted(depth_dict.items(), key=lambda kv: kv[1])
 
     def calculate_all(self, budget):
-        result1 = self.calculate_cost(budget, 'Type 1')
-        result2 = self.calculate_cost(budget, 'Type 2')
-        result3 = self.calculate_cost(budget, 'Type 3')
-        result4 = self.calculate_cost(budget, 'Type 4')
         self.resultList = []
         self.resultList.append(self.calculate_cost(budget, 'Type 1'))
         self.resultList.append(self.calculate_cost(budget, 'Type 2'))
         self.resultList.append(self.calculate_cost(budget, 'Type 3'))
         self.resultList.append(self.calculate_cost(budget, 'Type 4'))
-        # self.resultList = [result1, result2, result3, result4]
 
     # Returns: List of turbines that can be bought under the budget
     def calculate_cost(self, budget, turbine_type):
