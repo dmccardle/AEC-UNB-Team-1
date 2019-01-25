@@ -18,10 +18,14 @@
             <div class="row">
                 <div class="col-9" id="input" style="border-style: solid;"><h1 class="text-center">Input</h1>
                     <div id="budget">
-                        <h2>Budget</h2>
                         <div class="row">
                             <div class="col">
-                                ($): <input type="number" name="budget">
+                                Amount budgeted for project ( $ ): <input type="number" name="budget">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                Earnings ($ earned/kW produced): <input type="text" name="profit">
                             </div>
                         </div>
                     </div>
@@ -93,7 +97,7 @@
                         if( attribute == "Rule") {
                             $("#" + formatted_attribute).append('<p class="col">' + data[attribute][element] + '</p>')
                         } else {
-                            $("#" + formatted_attribute).append('<input class="col" type="text" name="' + attribute + '_optional_' + element + '" value="' + data[attribute][element] + '">')
+                            $("#" + formatted_attribute).append('<input class="col" type="text" name="' + attribute + '_optional_' + data["Type"][element] + '" value="' + data[attribute][element] + '">')
                         }
                     }
                 }
