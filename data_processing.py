@@ -35,6 +35,7 @@ class DataProcessor():
     # Returns: List of turbines that can be bought under the budget
     def calculate_cost(self, budget, turbine_type):
 
+        # Get row from data frame
         turbine = self.df_turbines.loc[self.df_turbines['Turbine Type'] == turbine_type]
 
         nominal_speed = turbine['Nominal power at (m/s)'].iloc[0]
