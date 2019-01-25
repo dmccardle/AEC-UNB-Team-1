@@ -94,10 +94,12 @@
                     $("#optional_cost_input").append('<div class="row" id="' + formatted_attribute + '"></div>');
                     $("#" + formatted_attribute ).append('<div class="col-3">' + attribute + '</div>')
                     for( var element in data[attribute]) {
-                        if( attribute == "Rule" || attribute == "Type") {
+                        if (attribute == "Type") {
                             $("#" + formatted_attribute).append('<input class="col" type="text" name="' + attribute + '_optional_' + element + '" value="' + data[attribute][element] + '" disabled>')
+                        } else if (attribute == "Rule") {
+                            $("#" + formatted_attribute).append('<p class="col">' + data[attribute][element] + '</p>')
                         } else {
-                            $("#" + formatted_attribute).append('<input class="col" type="text" name="' + attribute + '_optional_' + element + '" value="' + data[attribute][element] + '">')
+                            $("#" + formatted_attribute).append('<input class="col" type="text" name="' + attribute + '_optional_' + data["Type"][element] + '" value="' + data[attribute][element] + '">')
                         }
                     }
                 }
