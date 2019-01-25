@@ -21,7 +21,7 @@ class DataProcessor():
         to_return = []
         for index, val in enumerate(self.df_wind_data.values):
             for col_index, col_val in enumerate([x for x in list(val) if isinstance(x, (int, float))]):
-                if lower_speed - self.wind_stdev < col_val < upper_speed + self.wind_stdev:
+                if lower_speed - (self.wind_stdev * 0.5) < col_val < upper_speed + (self.wind_stdev * 1.5):
                     to_return.append((index, col_index))
 
         return to_return
