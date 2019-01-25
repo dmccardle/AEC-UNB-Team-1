@@ -8,12 +8,13 @@
     <script src="{{ url_for('static', filename='materialize.min.js') }}"></script>
     <script src="{{ url_for('static', filename='jquery.min.js') }}"></script>
     <script src="{{ url_for('static', filename='moment.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='http.js') }}"></script>
     <link rel= "stylesheet" type= "text/css" href= "/static/app.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 </head>
 <body>
     <div class="container">
-        <form> 
+        <form action="/app/submit" method="POST"> 
             <div class="row">
                 <div class="col-9" id="input" style="border-style: solid;"><h1 class="text-center">Input</h1>
                     <div id="budget">
@@ -26,29 +27,11 @@
                     </div>
                     <div id="turbines">
                         <h2>Turbines</h2>
-                        <div class="col">
-                            <div class="row">Turbine Name</div>
-                            <div class="row">IEC class</div>
-                            <div class="row">Rotor diameter(m)</div>
-                            <div class="row">Blade length(m)</div>
-                            <div class="row">Swept Area(m^2)</div>
-                            <div class="row">Cut-in speed(m/s)</div>
-                            <div class="row">Nominal power at</div>
-                            <div class="row">Cut-out speed(m/s)</div>
-                            <div class="row">Nominal Power(kW)</div>
-                            <div class="row">$/meter depth</div>
-                            <div class="row">Unit cost($M)</div>
-                            <div class="row">Maintenance Cost($M/yr)</div>
-                            <div class="row">Construct time(yr)</div>
+                        <div class="col" id="turbine_input">
                         </div>
                         <div id="optional_costs">
                             <h2>Optional Costs</h2>
-                            <div class="row">
-                                <div class="col">Type</div>
-                                <div class="col">Cost</div>
-                                <div class="col">Time Step</div>
-                                <div class="col">Maximum</div>
-                                <div class="col">Benefit</div>
+                            <div class="col" id="optional_cost_input">
                             </div>
                         </div>
                     </div>
@@ -83,5 +66,39 @@
         </form>
     </div>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+
+    <script type="text/javascript">
+        function formatted_title( title ) {
+            return title.replace(/\W|\s/g,"_");
+        }
+
+        $(document).ready(function() {
+            get_request( "/app/get_turbine_data", function(data) {
+                for(var attribute in data ) {
+                    formatted_attribute = formatted_title(attribute)
+                    $("#turbine_input").append('<div class="row" id="' + formatted_attribute + '"></div>');
+                    $("#" + formatted_attribute ).append('<div class="col-5">' + attribute + '</div>')
+                    for( var element in data[attribute]) {
+                        $("#" + formatted_attribute).append('<input class="col" type="text" name="' + attribute + '_turbine_' + element + '" value="' + data[attribute][element] + '">')
+                    }
+                }
+            }, get_default_error_handler );
+
+            get_request( "/app/get_optional_cost_data", function(data) {
+                for(var attribute in data ) {
+                    formatted_attribute = formatted_title(attribute)
+                    $("#optional_cost_input").append('<div class="row" id="' + formatted_attribute + '"></div>');
+                    $("#" + formatted_attribute ).append('<div class="col-3">' + attribute + '</div>')
+                    for( var element in data[attribute]) {
+                        if( attribute == "Rule") {
+                            $("#" + formatted_attribute).append('<p class="col">' + data[attribute][element] + '</p>')
+                        } else {
+                            $("#" + formatted_attribute).append('<input class="col" type="text" name="' + attribute + '_optional_' + element + '" value="' + data[attribute][element] + '">')
+                        }
+                    }
+                }
+            }, get_default_error_handler );
+        });
+    </script>
 </body>
 </html>
