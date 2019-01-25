@@ -7,9 +7,13 @@ class DataProcessor():
         self.df_optional_costs = pd.read_excel('aec.xlsx', skiprows=11).dropna(axis=1)
         self.df_wind_data = pd.read_excel('aec.xlsx', sheet_name='wind-data', index_col=0)
         self.df_depth_data = pd.read_excel('aec.xlsx', sheet_name='depth-data', index_col=0)
+
         tmp = self.df_wind_data.values.reshape(1, -1)[0]  # flatten data points
         tmp = [x for x in tmp if isinstance(x, (int, float))]  # remove non-numbers
         self.wind_stdev = stdev(tmp)
+
+        self.resultList = []
+        self.calculate_all(100000000)
 
 
     # Returns: all locations that have wind speed within one standard deviation of nominal_speed
@@ -31,6 +35,17 @@ class DataProcessor():
             depth_dict[(i,j)] = depth[i,j]
         return sorted(depth_dict.items(), key=lambda kv: kv[1])
 
+    def calculate_all(self, budget):
+        result1 = self.calculate_cost(budget, 'Type 1')
+        result2 = self.calculate_cost(budget, 'Type 2')
+        result3 = self.calculate_cost(budget, 'Type 3')
+        result4 = self.calculate_cost(budget, 'Type 4')
+        self.resultList = []
+        self.resultList.append(self.calculate_cost(budget, 'Type 1'))
+        self.resultList.append(self.calculate_cost(budget, 'Type 2'))
+        self.resultList.append(self.calculate_cost(budget, 'Type 3'))
+        self.resultList.append(self.calculate_cost(budget, 'Type 4'))
+        # self.resultList = [result1, result2, result3, result4]
 
     # Returns: List of turbines that can be bought under the budget
     def calculate_cost(self, budget, turbine_type):
@@ -39,14 +54,17 @@ class DataProcessor():
         turbine = self.df_turbines.loc[self.df_turbines['Turbine Type'] == turbine_type]
 
         nominal_speed = turbine['Nominal power at (m/s)'].iloc[0]
-        nominal_power = turbine['Nominal Power (kW)'].iloc[0]
-        time_to_construct = turbine['Time to construct (years)'].iloc[0]
+        nominal_power = float(turbine['Nominal Power (kW)'].iloc[0])
+        time_to_construct = float(turbine['Time to construct (years)'].iloc[0])
         type = turbine['Turbine Type'].iloc[0]
 
 
         if not isinstance(nominal_speed, (int, float)):
-            speeds = list(map(int, nominal_speed.split(' to ')))
-            location_candidates = self.find_location_candidates(speeds[0], speeds[1])
+            if ' to ' in nominal_speed:
+                speeds = list(map(float, nominal_speed.split(' to ')))
+                location_candidates = self.find_location_candidates(speeds[0], speeds[1])
+            else:
+                location_candidates = self.find_location_candidates(float(nominal_speed), float(nominal_speed))
         else:
             location_candidates = self.find_location_candidates(nominal_speed, nominal_speed)
 
@@ -63,8 +81,8 @@ class DataProcessor():
         total_power = 0
         total_time = 0
         for candidate_key in depth_candidates:
-            cost = turbine['Unit Cost (Millions $)'].iloc[0] * 1000000
-            cost += turbine['Cost per meter depth increase'].iloc[0] * candidate_key[1]
+            cost = float(turbine['Unit Cost (Millions $)'].iloc[0]) * 1000000
+            cost += float(turbine['Cost per meter depth increase'].iloc[0]) * candidate_key[1]
 
             if budget - total_cost - cost > 0:
                 locations.append((indexes[candidate_key[0][0]], columns[candidate_key[0][1]]))
