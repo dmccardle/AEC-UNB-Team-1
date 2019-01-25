@@ -13,73 +13,72 @@
 </head>
 <body>
     <div class="container">
-        <form action="/app/submit">
-            First name: <input type="text" name="fname"><br>
-            Last name: <input type="text" name="lname"><br>
-            <input type="submit" name="type" value="Calculate" class="btn btn-info">
-            <input type="submit" name="type" value="Export" class="btn btn-success">
-        </form>
         <div class="row">
-            <div class="col-9" id="input" style="border-style: solid;"><h1 class="text-center">Input</h1>
-                <div id="budget">
-                    <h2>Budget</h2>
-                    <div class="row">
+            <form> 
+                <div class="col-9" id="input" style="border-style: solid;"><h1 class="text-center">Input</h1>
+                    <div id="budget">
+                        <h2>Budget</h2>
+                        <div class="row">
+                            <div class="col">
+                                ($): <input type="number" name="budget">
+                            </div>
+                        </div>
+                    </div>
+                    <div id="turbines">
+                        <h2>Turbines</h2>
                         <div class="col">
-                            ($): <input type="number" name="budget">
+                            <div class="row">Turbine Name</div>
+                            <div class="row">IEC class</div>
+                            <div class="row">Rotor diameter(m)</div>
+                            <div class="row">Blade length(m)</div>
+                            <div class="row">Swept Area(m^2)</div>
+                            <div class="row">Cut-in speed(m/s)</div>
+                            <div class="row">Nominal power at</div>
+                            <div class="row">Cut-out speed(m/s)</div>
+                            <div class="row">Nominal Power(kW)</div>
+                            <div class="row">$/meter depth</div>
+                            <div class="row">Unit cost($M)</div>
+                            <div class="row">Maintenance Cost($M/yr)</div>
+                            <div class="row">Construct time(yr)</div>
+                        </div>
+                        <div id="optional_costs">
+                            <h2>Optional Costs</h2>
+                            <div class="row">
+                                <div class="col">Type</div>
+                                <div class="col">Cost</div>
+                                <div class="col">Time Step</div>
+                                <div class="col">Maximum</div>
+                                <div class="col">Benefit</div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div id="turbines">
-                    <h2>Turbines</h2>
-                    <div class="col">
-                        <div class="row">Turbine Name</div>
-                        <div class="row">IEC class</div>
-                        <div class="row">Rotor diameter(m)</div>
-                        <div class="row">Blade length(m)</div>
-                        <div class="row">Swept Area(m^2)</div>
-                        <div class="row">Cut-in speed(m/s)</div>
-                        <div class="row">Nominal power at</div>
-                        <div class="row">Cut-out speed(m/s)</div>
-                        <div class="row">Nominal Power(kW)</div>
-                        <div class="row">$/meter depth</div>
-                        <div class="row">Unit cost($M)</div>
-                        <div class="row">Maintenance Cost($M/yr)</div>
-                        <div class="row">Construct time(yr)</div>
+                <div class="col-3" id="output" style="border-style: solid;"><h1 class="text-center">Output</h1>
+                    <div id="turbine_output">
+                        <div class="row">
+                            <p>Placement: </p>
+                        </div>
+                        <div class="row">
+                            <p>Number: </p>
+                        </div>
+                        <div class="row">
+                            <p>Type: </p>
+                        </div>
+                        <div class="row">
+                            <p>Time: </p>
+                        </div>
+                        <div class="row">
+                            <p>Cost: </p>
+                        </div>
+                        <div class="row">
+                            <p>Power produced: </p>
+                        </div>
                     </div>
                 </div>
-                <div id="optional_costs">
-                    <h2>Optional Costs</h2>
-                    <div class="row">
-                        <div class="col">Type</div>
-                        <div class="col">Cost</div>
-                        <div class="col">Time Step</div>
-                        <div class="col">Maximum</div>
-                        <div class="col">Benefit</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-3" id="output" style="border-style: solid;"><h1 class="text-center">Output</h1>
-                <div id="turbine_output">
-                    <div class="row">
-                        <p>Placement: </p>
-                    </div>
-                    <div class="row">
-                        <p>Number: </p>
-                    </div>
-                    <div class="row">
-                        <p>Type: </p>
-                    </div>
-                    <div class="row">
-                        <p>Time: </p>
-                    </div>
-                    <div class="row">
-                        <p>Cost: </p>
-                    </div>
-                    <div class="row">
-                        <p>Power produced: </p>
-                    </div>
-                </div>
-            </div>
+            
+                <input type="submit" name="type" value="Calculate" class="btn btn-info">
+                <input type="submit" name="type" value="Export" class="btn btn-success">
+            </form>
         </div>
     </div>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
