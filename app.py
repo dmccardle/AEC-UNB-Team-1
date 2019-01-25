@@ -6,6 +6,7 @@ import os
 app = Flask(__name__)
 db = TinyDB('data.json')
 dataProcessor = DataProcessor()
+dataProcessor.calculate_cost(100000000, 'Type 1')
 
 @app.route('/app')
 def hello_world():

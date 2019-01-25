@@ -11,15 +11,19 @@ class DataProcessor():
         tmp = [x for x in tmp if isinstance(x, (int, float))]  # remove non-numbers
         self.wind_stdev = stdev(tmp)
 
-    def find_location_candidates(self, nominal_speed):
+
+    # Returns: all locations that have wind speed within one standard deviation of nominal_speed
+    def find_location_candidates(self, lower_speed, upper_speed):
         to_return = []
-        for index, val in self.df_wind_data.values:
-            if nominal_speed - self.wind_stdev < val < nominal_speed + self.wind_stdev:
-                to_return.append(index)
+        for index, val in enumerate(self.df_wind_data.values):
+            for col_index, col_val in enumerate([x for x in list(val) if isinstance(x, (int, float))]):
+                if lower_speed - self.wind_stdev < col_val < upper_speed + self.wind_stdev:
+                    to_return.append((index, col_index))
 
         return to_return
 
 
+    # Returns: Sorted depths at given locations from location_candidates
     def find_depth_candidates(self, location_candidates):
         depth = self.df_depth_data.values
         depth_dict = {}
@@ -28,6 +32,33 @@ class DataProcessor():
         return sorted(depth_dict.items(), key=lambda kv: kv[1])
 
 
+    # Returns: List of turbines that can be bought under the budget
+    def calculate_cost(self, budget, turbine_type):
+
+        turbine = self.df_turbines.loc[self.df_turbines['Turbine Type'] == turbine_type]
+
+        nominal_speed = turbine['Nominal power at (m/s)'].iloc[0]
+
+        if not isinstance(nominal_speed, (int, float)):
+            speeds = list(map(int, nominal_speed.split(' to ')))
+            location_candidates = self.find_location_candidates(speeds[0], speeds[1])
+        else:
+            location_candidates = self.find_location_candidates(nominal_speed, nominal_speed)
 
 
+        depth_candidates = self.find_depth_candidates(location_candidates)
 
+        columns = list(self.df_wind_data)
+        indexes = self.df_wind_data.index.values
+
+        locations = []
+        total_cost = 0
+        for candidate_key in depth_candidates:
+            cost = turbine['Unit Cost (Millions $)'].iloc[0] * 1000000
+            cost += turbine['Cost per meter depth increase'].iloc[0] * candidate_key[1]
+
+            if budget - total_cost - cost > 0:
+                locations.append((indexes[candidate_key[0][0]], columns[candidate_key[0][1]]))
+                total_cost += cost
+            else:
+                return total_cost, len(locations), locations
