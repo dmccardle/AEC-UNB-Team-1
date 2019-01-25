@@ -30,6 +30,6 @@ If the user wishes to export their modified cost data, they can click export and
 the new file. 
 
 ### Techologies Used 
-Web Application: Python, Flask Framework, Bootstrap Framework
-Data Manipulation and Analysis: Pandas Library
-Persistent Data Storage: Excel
+- Web Application: Python, Flask Framework, Bootstrap Framework
+- Data Manipulation and Analysis: Pandas Library
+- Persistent Data Storage: Excel
