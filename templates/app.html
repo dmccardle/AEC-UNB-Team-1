@@ -78,6 +78,39 @@
             return title.replace(/\W|\s/g,"_");
         }
 
+        function updateOutput(input) {
+             var dropDownValue;
+              if(!input) {
+                 dropDownValue = $(this).val();
+              } else {
+                dropDownValue = input;
+              }
+              get_request( "/app/getresult", function(data) {
+               data = data.filter(result =>
+                   result['type'] == dropDownValue
+               );
+
+               // Should only be one left after filtering.
+               data = data[0];
+
+               console.log(data);
+               Object.keys(data).forEach(function(key,index) {
+                // key: the name of the object key
+                // index: the ordinal position of the key within the object
+                   console.log(key, data[key]);
+                    if(Array.isArray(data[key])) {
+                        $("#" + key).empty();
+                        data[key].forEach(function(listItem, index) {
+                            $("#" + key).append('<p>' + 'Longitude, Latitude: '+ listItem + '</p>')
+                        });
+                    } else {
+                        $("#" + key).empty().append('<span> &nbsp' + data[key] + '</span>')
+                    }
+                 });
+
+            }, get_default_error_handler );
+        }
+
         $(document).ready(function() {
             get_request( "/app/get_turbine_data", function(data) {
                 for(var attribute in data ) {
@@ -117,41 +150,16 @@
                     data.forEach(function(listItem, index) {
                         $('#dropDown').append(new Option(listItem['type'], listItem['type']));
                     });
-
+                updateOutput(data[0]['type']);
 
                 }
             }, get_default_error_handler );
         });
 
 
-         $("#dropDown").change(function () {
-              var dropDownValue = $(this).val();
-              get_request( "/app/getresult", function(data) {
-               data = data.filter(result =>
-                   result['type'] == dropDownValue
-               );
+         $("#dropDown").change(updateOutput);
 
-               // Should only be one left after filtering.
-               data = data[0];
 
-               console.log(data);
-               Object.keys(data).forEach(function(key,index) {
-                // key: the name of the object key
-                // index: the ordinal position of the key within the object
-                   console.log(key, data[key]);
-                    if(Array.isArray(data[key])) {
-                        $("#" + key).empty();
-                        data[key].forEach(function(listItem, index) {
-                            $("#" + key).append('<p>' + 'Longitude, Latitude: '+ listItem + '</p>')
-                        });
-                    } else {
-                        $("#" + key).empty().append('<span> &nbsp' + data[key] + '</span>')
-                    }
-                 });
-
-            }, get_default_error_handler );
-
-         });
     </script>
 </body>
 </html>
