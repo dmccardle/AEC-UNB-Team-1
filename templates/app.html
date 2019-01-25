@@ -79,12 +79,7 @@
         }
 
         function updateOutput(input) {
-             var dropDownValue;
-              if(!input) {
-                 dropDownValue = $(this).val();
-              } else {
-                dropDownValue = input;
-              }
+             var dropDownValue =$("#dropDown").val();
               get_request( "/app/getresult", function(data) {
                data = data.filter(result =>
                    result['type'] == dropDownValue
