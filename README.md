@@ -6,13 +6,13 @@ of offshore wind turbine locations.
 A statistical model determines the 'best candidate' locations for turbine placement, 
 and determines how many of these locations can be used within a given budget based on
 the following attributes:
-- IEC class	
+- IEC class	(more info: https://en.wikipedia.org/wiki/IEC_61400#Wind_Turbine_Generator_(WTG)_classes)
 - Rotor diameter (m)	
 - Blade length (m)	
 - Swept area (m^2)	
-- Cut-in wind speed (m/s)	
+- Cut-in wind speed (m/s) (more info: http://www.wind-power-program.com/turbine_characteristics.htm)
 - Nominal power at (m/s)	
-- Cut-out wind speed	
+- Cut-out wind speed (more info: http://www.wind-power-program.com/turbine_characteristics.htm)
 - Nominal Power (kW)	
 - Cost per meter depth increase	
 - Unit Cost (Millions $)	
@@ -30,6 +30,6 @@ If the user wishes to export their modified cost data, they can click export and
 the new file. 
 
 ### Techologies Used 
-- Web Application: Python, Flask Framework, Bootstrap Framework
-- Data Manipulation and Analysis: Pandas Library
+- Web Application: Python, Flask Framework (http://flask.pocoo.org/), Bootstrap Framework (https://getbootstrap.com/)
+- Data Manipulation and Analysis: Pandas Library (https://pandas.pydata.org/)
 - Persistent Data Storage: Excel
