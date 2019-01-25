@@ -11,7 +11,6 @@ dataProcessor.calculate_cost(100000000, 'Type 1')
 @app.route('/app')
 def hello_world():
     q = Query()
-    dataProcessor.find_location_candidates(15)
     return render_template('app.html')
 
 @app.route( '/app/addEvent', methods=['POST'] )
