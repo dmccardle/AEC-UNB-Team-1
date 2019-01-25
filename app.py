@@ -24,10 +24,9 @@ def submit():
         json_turbine = {}
         # stores json data about each optional data type from the excel document
         json_optional = {}
-        budget = 0
 
         # process which form data is for the turbine, and which is for the optional data
-        json_turbine, json_optional = process_form_data()
+        json_turbine, json_optional, budget = process_form_data()
 
         # Modify Turbine information tables
         for turbine in json_turbine:
@@ -122,4 +121,4 @@ def process_form_data():
             else:
                optional_return_json[value_split[ROW_INDEX]][value_split[COLUMN_INDEX]] = request.form[value]
         
-    return turbine_return_json, optional_return_json
+    return turbine_return_json, optional_return_json, budget
