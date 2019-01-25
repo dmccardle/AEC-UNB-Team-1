@@ -3,20 +3,27 @@ from data_processing import *
 import os
 import json
 
+# Initialize Flask Application
 app = Flask(__name__)
+# Setup data processor for performing data manipulations
 dataProcessor = DataProcessor()
 result = dataProcessor.calculate_cost(100000000, 'Type 1')
 
-
+# App home screen
 @app.route('/app')
 def hello_world():
     return render_template('app.html')
 
+# Performed when the user selects to 'calculate' or 'export'
 @app.route('/app/submit',  methods=['POST'] )
 def submit():
+    # determines which type of request from the form and performs the operation
     requestType = request.form['type']
+
     if requestType == 'Calculate':
+        # stores json data about each turbine type from the excel document
         json_turbine = {}
+        # stores json data about each optional data type from the excel document
         json_optional = {}
 
         COLUMN_INDEX = 0 # Represents the index for accessing a column ex. Cut-in wind speed
