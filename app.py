@@ -1,11 +1,9 @@
 from flask import Flask, render_template, request, send_from_directory, jsonify
-from tinydb import TinyDB, Query
 from data_processing import *
 import os
 import json
 
 app = Flask(__name__)
-db = TinyDB('data.json')
 dataProcessor = DataProcessor()
 result = dataProcessor.calculate_cost(100000000, 'Type 1')
 
@@ -14,32 +12,45 @@ result = dataProcessor.calculate_cost(100000000, 'Type 1')
 def hello_world():
     return render_template('app.html')
 
-@app.route( '/app/addEvent', methods=['POST'] )
-def add_event():
-    db.insert( request.get_json() )
-    return jsonify(success=True)
-
-@app.route('/app/fetch')
-def getEvents():
-    query = Query()
-
-    result = db.all()
-    return jsonify(result)
-
 @app.route('/app/submit',  methods=['POST'] )
 def submit():
     requestType = request.form['type']
     if requestType == 'Calculate':
-        print(request.form)
-        json_representation = {}
+        json_turbine = {}
+        json_optional = {}
+
         for value_in in request.form:
             split = value_in.split('_')
-            for i, token in enumerate(reversed(split)):
+            if len(split) < 3: # represent budget or type 
+                if split[0] == 'budget':
+                    budget = request.form[split[0]]
+            elif split[1] == 'turbine': # represents data for the turbines
+                if split[2] not in json_turbine:
+                    json_turbine[split[2]] = {}
+                else:
+                    json_turbine[split[2]][split[0]] = request.form[value_in]
+            else: # represents data for the optional costs
+                if split[2] not in json_optional:
+                    json_optional[split[2]] = {}
+                else:
+                    json_optional[split[2]][split[0]] = request.form[value_in]
 
-                if token not in json_representation and i == 0:
-                    json_representation[token] = {}
-        
-        print(json_representation)
+        # Modify Turbine information tables
+        for turbine in json_turbine:
+            row = dataProcessor.df_turbines.loc[dataProcessor.df_turbines['Turbine Type'] == turbine]
+            for attribute in json_turbine[turbine]:
+                row[attribute].iloc[0] = json_turbine[turbine][attribute]
+
+            dataProcessor.df_turbines.loc[dataProcessor.df_turbines['Turbine Type'] == turbine] = row
+
+        # Modify Optional Cost information tables
+        for option in json_optional:
+            row = dataProcessor.df_optional_costs.loc[dataProcessor.df_optional_costs['Type'] == option]
+            for attribute in json_optional[option]:
+                row[attribute].iloc[0] = json_optional[option][attribute]
+
+            dataProcessor.df_optional_costs.loc[dataProcessor.df_optional_costs['Type'] == option] = row
+
         return "Perform a calculation!"
     elif requestType == 'Export':
         return "Perform an export!"

@@ -80,9 +80,9 @@
                     $("#" + formatted_attribute ).append('<div class="col-5">' + attribute + '</div>')
                     for( var element in data[attribute]) {
                         if (attribute == "Turbine Type") {
-                            $("#" + formatted_attribute).append('<input class="col" type="text" name="' + attribute + '_turbine_' + element + '" value="' + data[attribute][element] + '" disabled>')
+                            $("#" + formatted_attribute).append('<input class="col" type="text" name="' + attribute + '_turbine_' + data["Turbine Type"][element] + '" value="' + data[attribute][element] + '" disabled>')
                         } else {
-                            $("#" + formatted_attribute).append('<input class="col" type="text" name="' + attribute + '_turbine_' + element + '" value="' + data[attribute][element] + '">')
+                            $("#" + formatted_attribute).append('<input class="col" type="text" name="' + attribute + '_turbine_' + data["Turbine Type"][element] + '" value="' + data[attribute][element] + '">')
                         }
                     }
                 }
