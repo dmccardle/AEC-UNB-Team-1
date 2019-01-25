@@ -93,7 +93,7 @@
                         if( attribute == "Rule") {
                             $("#" + formatted_attribute).append('<p class="col">' + data[attribute][element] + '</p>')
                         } else {
-                            $("#" + formatted_attribute).append('<input class="col" type="text" name="' + attribute + '_optional_' + element + '" value="' + data[attribute][element] + '">')
+                            $("#" + formatted_attribute).append('<input class="col" type="text" name="' + attribute + '_optional_' + data["Type"][element] + '" value="' + data[attribute][element] + '">')
                         }
                     }
                 }
