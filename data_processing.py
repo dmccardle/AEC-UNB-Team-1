@@ -55,7 +55,7 @@ class DataProcessor():
         # Indexes and columns variables hold the actual longitutde and latitude values
         # Since we've been using indexes until now.
         columns = list(self.df_wind_data)
-        indexes = self.df_wind_data.index.values
+        indexes = list(map(float, self.df_wind_data.index.values))
 
         locations = []
         total_cost = 0

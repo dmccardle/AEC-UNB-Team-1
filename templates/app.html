@@ -40,23 +40,23 @@
                     <select id="dropDown"></select>
 
                     <div id="turbine_output">
-                        <div class="row" id="locations">
-                            <p>Placement(s): </p>
+                        <div class="row">
+                            <p>Placement(s): <div id="locations"></div> </p>
                         </div>
-                        <div class="row" id="numTurbines">
-                            <p># of Turbines: </p>
+                        <div class="row">
+                            <p># of Turbines: <div id="numTurbines"></div> </p>
                         </div>
-                        <div class="row" id="type">
-                            <p>Type: </p>
+                        <div class="row">
+                            <p>Type: <div id="type"></div> </p>
                         </div>
-                        <div class="row" id="totalTime">
-                            <p>Total Time (years): </p>
+                        <div class="row">
+                            <p>Total Time (years): <div id="totalTime"></div> </p>
                         </div>
-                        <div class="row" id="totalCost">
-                            <p>Cost ($): </p>
+                        <div class="row">
+                            <p>Cost ($): <div id="totalCost"></div> </p>
                         </div>
-                        <div class="row" id="totalPower">
-                            <p >Power produced (MW): </p>
+                        <div class="row">
+                            <p>Power produced (MW): <div id="totalPower"></div></p>
                         </div>
                     </div>
                 </div>
@@ -111,7 +111,7 @@
             get_request( "/app/getresult", function(data) {
                 if(data) {
                     data.forEach(function(listItem, index) {
-                        $('#dropDown').append(new Option(data[listItem], data[listItem]));
+                        $('#dropDown').append(new Option(listItem['type'], listItem['type']));
                     });
 
 
@@ -121,7 +121,31 @@
 
 
          $("#dropDown").change(function () {
-            var end = this.value;
+              var dropDownValue = $(this).val();
+              get_request( "/app/getresult", function(data) {
+               data = data.filter(result =>
+                   result['type'] == dropDownValue
+               );
+
+               // Should only be one left after filtering.
+               data = data[0];
+
+               console.log(data);
+               Object.keys(data).forEach(function(key,index) {
+                // key: the name of the object key
+                // index: the ordinal position of the key within the object
+                   console.log(key, data[key]);
+                    if(Array.isArray(data[key])) {
+                        $("#" + key).empty();
+                        data[key].forEach(function(listItem, index) {
+                            $("#" + key).append('<p>' + 'Longitude, Latitude: '+ listItem + '</p>')
+                        });
+                    } else {
+                        $("#" + key).empty().append('<span> &nbsp' + data[key] + '</span>')
+                    }
+                 });
+
+            }, get_default_error_handler );
 
          });
     </script>

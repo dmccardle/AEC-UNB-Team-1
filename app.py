@@ -90,5 +90,22 @@ def get_result():
 
     return json.dumps(returnList)
 
+
+
+@app.route('/app/getresultsingle')
+def get_result_single():
+    result = dataProcessor.calculate_cost(100000000, 'Type 1')
+    # Some of these are Numpy types which need unpacking with the item() function
+
+    calculation_result = {}
+    calculation_result['totalCost'] = result[0].item()
+    calculation_result['numTurbines'] = result[1]
+    calculation_result['locations'] = result[2]
+    calculation_result['totalPower'] = result[3].item()
+    calculation_result['totalTime'] = result[4].item()
+    calculation_result['type'] = result[5]
+
+    return json.dumps(calculation_result)
+
 if __name__ == '__main__':
     app.run()
