@@ -38,23 +38,23 @@
                 </div>
                 <div class="col-3" id="output" style="border-style: solid;"><h1 class="text-center">Output</h1>
                     <div id="turbine_output">
-                        <div class="row">
-                            <p>Placement: </p>
+                        <div class="row" id="locations">
+                            <p>Placement(s): </p>
                         </div>
-                        <div class="row">
-                            <p>Number: </p>
+                        <div class="row" id="numTurbines">
+                            <p># Turbines: </p>
                         </div>
-                        <div class="row">
+                        <div class="row" id="type">
                             <p>Type: </p>
                         </div>
-                        <div class="row">
-                            <p>Time: </p>
+                        <div class="row" id="totalTime">
+                            <p>Total Time (years): </p>
                         </div>
-                        <div class="row">
-                            <p>Cost: </p>
+                        <div class="row" id="totalCost">
+                            <p>Cost ($): </p>
                         </div>
-                        <div class="row">
-                            <p>Power produced: </p>
+                        <div class="row" id="totalPower">
+                            <p >Power produced (MW): </p>
                         </div>
                     </div>
                 </div>
@@ -79,7 +79,11 @@
                     $("#turbine_input").append('<div class="row" id="' + formatted_attribute + '"></div>');
                     $("#" + formatted_attribute ).append('<div class="col-5">' + attribute + '</div>')
                     for( var element in data[attribute]) {
-                        $("#" + formatted_attribute).append('<input class="col" type="text" name="' + attribute + '_turbine_' + data["Turbine Type"][element] + '" value="' + data[attribute][element] + '">')
+                        if (attribute == "Turbine Type") {
+                            $("#" + formatted_attribute).append('<input class="col" type="text" name="' + attribute + '_turbine_' + data["Turbine Type"][element] + '" value="' + data[attribute][element] + '" disabled>')
+                        } else {
+                            $("#" + formatted_attribute).append('<input class="col" type="text" name="' + attribute + '_turbine_' + data["Turbine Type"][element] + '" value="' + data[attribute][element] + '">')
+                        }
                     }
                 }
             }, get_default_error_handler );
@@ -90,13 +94,32 @@
                     $("#optional_cost_input").append('<div class="row" id="' + formatted_attribute + '"></div>');
                     $("#" + formatted_attribute ).append('<div class="col-3">' + attribute + '</div>')
                     for( var element in data[attribute]) {
-                        if( attribute == "Rule") {
+                        if (attribute == "Type") {
+                            $("#" + formatted_attribute).append('<input class="col" type="text" name="' + attribute + '_optional_' + element + '" value="' + data[attribute][element] + '" disabled>')
+                        } else if (attribute == "Rule") {
                             $("#" + formatted_attribute).append('<p class="col">' + data[attribute][element] + '</p>')
                         } else {
                             $("#" + formatted_attribute).append('<input class="col" type="text" name="' + attribute + '_optional_' + data["Type"][element] + '" value="' + data[attribute][element] + '">')
                         }
                     }
                 }
+            }, get_default_error_handler );
+
+
+            get_request( "/app/getresult", function(data) {
+                Object.keys(data).forEach(function(key,index) {
+                // key: the name of the object key
+                // index: the ordinal position of the key within the object
+                    if(Array.isArray(data[key])) {
+                        data[key].forEach(function(listItem,index) {
+                            $("#" + key).append('<p>' + 'Longitude, Latitude: '+ listItem + '</p>')
+                        });
+
+                    } else {
+                        $("#" + key).append('<span> &nbsp' + data[key] + '</span>')
+                    }
+                 });
+
             }, get_default_error_handler );
         });
     </script>

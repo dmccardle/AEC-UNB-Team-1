@@ -38,6 +38,10 @@ class DataProcessor():
         turbine = self.df_turbines.loc[self.df_turbines['Turbine Type'] == turbine_type]
 
         nominal_speed = turbine['Nominal power at (m/s)'].iloc[0]
+        nominal_power = turbine['Nominal Power (kW)'].iloc[0]
+        time_to_construct = turbine['Time to construct (years)'].iloc[0]
+
+
 
         if not isinstance(nominal_speed, (int, float)):
             speeds = list(map(int, nominal_speed.split(' to ')))
@@ -48,11 +52,15 @@ class DataProcessor():
 
         depth_candidates = self.find_depth_candidates(location_candidates)
 
+        # Indexes and columns variables hold the actual longitutde and latitude values
+        # Since we've been using indexes until now.
         columns = list(self.df_wind_data)
         indexes = self.df_wind_data.index.values
 
         locations = []
         total_cost = 0
+        total_power = 0
+        total_time = 0
         for candidate_key in depth_candidates:
             cost = turbine['Unit Cost (Millions $)'].iloc[0] * 1000000
             cost += turbine['Cost per meter depth increase'].iloc[0] * candidate_key[1]
@@ -60,5 +68,7 @@ class DataProcessor():
             if budget - total_cost - cost > 0:
                 locations.append((indexes[candidate_key[0][0]], columns[candidate_key[0][1]]))
                 total_cost += cost
+                total_power += nominal_power
+                total_time += time_to_construct
             else:
-                return total_cost, len(locations), locations
+                return total_cost, len(locations), locations, total_power, total_time
